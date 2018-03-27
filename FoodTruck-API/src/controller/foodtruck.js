@@ -6,72 +6,72 @@
 
 import mongoose from 'mongoose';
 import { Router } from 'express';
-import Restaurant from '../model/restaurant';
+import FoodTruck from '../model/foodTruck';
 
 export default({config, db}) => {
     let api = Router();
 
     // CRUD
 
-    // '/v1/restaurant/add
+    // '/v1/foodTruck/add
     api.post('/add', (req, res) => {
-        let newRest = new Restaurant();
-        newRest.name = req.body.name;
+        let newFoodTruck = new FoodTruck();
+        newFoodTruck.name = req.body.name;
         
-        newRest.save(err => {
+        newFoodTruck.save(err => {
             if(err) {
                 res.send(err);
             }
-            res.json({ message: 'Restaurant saved successfully'});
+            res.json({ message: 'FoodTruck saved successfully'});
         });
     });
 
-    // path '/v1/restaurant' - READ
+    // path '/v1/foodTruck' - READ
     api.get('/', (req, res) => {
-        Restaurant.find({}, (err, restaurant) => {
+        FoodTruck.find({}, (err, foodTruck) => {
             if(err) {
                 res.send(err);
             }
-            res.json(restaurant);
+            res.json(foodTruck);
         });
     });
 
-    // 'v1/restaurant/:id' - READ 1
+    // 'v1/foodTruck/:id' - READ 1
     api.get('/:id', (req, res) => {
-        Restaurant.findById(req.params.id, (err, restaurant) => {
+        FoodTruck.findById(req.params.id, (err, foodTruck) => {
             if(err) {
                 res.send(err);
             }
-            res.json(restaurant);
+            res.json(foodTruck);
         });
     });
 
-    // 'v1/restaurant/:id' - UPDATE
+    // 'v1/foodTruck/:id' - UPDATE
     api.put('/:id', (req, res) => {
-        Restaurant.findById(req.params.id, (err, restaurant) => {
+        FoodTruck.findById(req.params.id, (err, foodTruck) => {
             if (err) {
                 res.send(err);
             }
-            restaurant.name = req.body.name;
-            restaurant.save(err => {
+            foodTruck.name = req.body.name;
+            foodTruck.save(err => {
                 if (err) {
                     res.send(err);
                 }
-                res.json({message : "Restaurant info updated"});
+                res.json({message : "FoodTruck info updated"});
             });
         });
     });
 
-    // 'v1/restaurant/:id' - DELETE
+    // 'v1/foodTruck/:id' - DELETE
 
     api.delete('/:id', (req, res) => {
-        Restaurant.remove({
+        FoodTruck.remove({
             _id: req.params.id
-        }, (err, restaurant) => {
+        }, (err, foodTruck) => {
             if(err) {
                 res.send(err);
             }
-            res.json({message: "Restaurant successfully removed"});
+            res.json({message: "FoodTruck successfully removed"});
         });
     });
 
