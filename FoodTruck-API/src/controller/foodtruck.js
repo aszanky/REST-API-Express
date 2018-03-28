@@ -6,7 +6,8 @@
 
 import mongoose from 'mongoose';
 import { Router } from 'express';
-import FoodTruck from '../model/foodTruck';
+import FoodTruck from '../model/foodtruck';
+import Review from '../model/review';
 
 export default({config, db}) => {
     let api = Router();
@@ -17,7 +18,10 @@ export default({config, db}) => {
     api.post('/add', (req, res) => {
         let newFoodTruck = new FoodTruck();
         newFoodTruck.name = req.body.name;
-        
+        newFoodTruck.foodtype = req.body.foodtype;
+        newFoodTruck.avgcost = req.body.avgcost;
+        newFoodTruck.geometry.coordinates = req.body.geometry.coordinates;
+
         newFoodTruck.save(err => {
             if(err) {
                 res.send(err);
@@ -74,6 +78,31 @@ export default({config, db}) => {
             res.json({message: "FoodTruck successfully removed"});
         });
     });
+
+    // 'v1/foodtruck/reviews/add/:id' - POST
+    api.post('/reviews/add/:id', (req, res) => {
+        FoodTruck.findById(req.params.id, (err, foodtruck) => {
+            if(err) {
+                res.send(err);
+            }
+            let newReview = new Review();
+            newReview.title = req.body.title;
+            newReview.text = req.body.text;
+            newReview.foodtruck = foodtruck._id;
+            newReview.save((err, review) => {
+                if(err) {
+                    res.send(err);
+                }
+                foodtruck.reviews.push(newReview);
+                foodtruck.save(err => {
+                    if(err) {
+                        res.send(err);
+                    }
+                    res.json({message: 'Food Truck review saved!'});
+                })
+            })
+        })
+    })
 
     return api;
 }
